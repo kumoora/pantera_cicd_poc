@@ -15,7 +15,7 @@ terraform {
 #     encrypt        = true
 #     role_arn       = "arn:aws:iam::<your-aws-account-no>:role/<terraform-s3-backend-access-role>"
 #   }
-# }
+}
 
 provider "snowflake" {
   username    = "kumar"
