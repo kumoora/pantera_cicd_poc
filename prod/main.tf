@@ -2,21 +2,10 @@
 terraform {
   required_providers {
     snowflake = {
-      source  = "Snowflake-Labs/snowflake"
+      source  = "snowflakedb/snowflake"
       version = ">= 0.70.0"
     }
   }
-
-  # Uncomment and configure if using remote state in S3
-  # backend "s3" {
-  #   bucket         = "<your-bucket-name>"
-  #   key            = "terraform-prod.tfstate"
-  #   region         = "<bucket-region>"
-  #   # Optional DynamoDB for state locking
-  #   # dynamodb_table = "terraform-state-lock-table"
-  #   encrypt        = true
-  #   role_arn       = "arn:aws:iam::<your-aws-account-no>:role/<terraform-s3-backend-access-role>"
-  # }
 }
 
 provider "snowflake" {
