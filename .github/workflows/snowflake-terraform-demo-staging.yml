@@ -1,3 +1,4 @@
+
 name: "STAGING ENV: Snowflake Terraform Demo Workflow"
 
 on: 
@@ -10,17 +11,11 @@ jobs:
     name: "Plan & Deploy Terraform plan on Staging"
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-southeast-2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -39,7 +34,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform -chdir=./staging plan 
+        run: terraform -chdir=./staging plan
         env:
           TF_VAR_snowflake_private_key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
 
@@ -48,3 +43,12 @@ jobs:
         run: terraform -chdir=./staging apply -auto-approve
         env:
           TF_VAR_snowflake_private_key: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+
+      # ✅ Commit Terraform state file to repo
+      - name: Commit Terraform state
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add staging/terraform.tfstate staging/terraform.tfstate.backup || echo "No state file found"
+          git commit -m "Update Terraform state for staging" || echo "No changes to commit"
+          git push
